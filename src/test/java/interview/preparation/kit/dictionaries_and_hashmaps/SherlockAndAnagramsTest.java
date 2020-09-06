@@ -1,6 +1,14 @@
 package interview.preparation.kit.dictionaries_and_hashmaps;
 
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 import static interview.preparation.kit.dictionaries_and_hashmaps.SherlockAndAnagrams.isAnagram;
 import static interview.preparation.kit.dictionaries_and_hashmaps.SherlockAndAnagrams.sherlockAndAnagrams;
@@ -52,6 +60,20 @@ public class SherlockAndAnagramsTest {
     @Test
     public void isAnagram_04_returnsFalse() {
         assertThat(isAnagram("ifailuh", "failuhk"), is(false));
+    }
+
+    // TODO: improve the algorithm performance time
+    @Test
+    @Ignore
+    public void sample_04() throws URISyntaxException, IOException {
+        final Path path = Paths.get(SherlockAndAnagramsTest.class.getResource("/sherlock-and-anagrams_input2.txt").toURI());
+        final List<String> allLines = Files.readAllLines(path);
+
+        assertThat(sherlockAndAnagrams(allLines.get(1)), is(399));
+        assertThat(sherlockAndAnagrams(allLines.get(2)), is(471));
+        assertThat(sherlockAndAnagrams(allLines.get(3)), is(370));
+        assertThat(sherlockAndAnagrams(allLines.get(4)), is(403));
+        assertThat(sherlockAndAnagrams(allLines.get(5)), is(428));
     }
 
 }
