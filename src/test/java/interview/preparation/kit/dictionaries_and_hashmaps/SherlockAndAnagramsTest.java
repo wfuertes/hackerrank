@@ -62,9 +62,7 @@ public class SherlockAndAnagramsTest {
         assertThat(isAnagram("ifailuh", "failuhk"), is(false));
     }
 
-    // TODO: improve the algorithm performance time
     @Test
-    @Ignore
     public void sample_04() throws URISyntaxException, IOException {
         final Path path = Paths.get(SherlockAndAnagramsTest.class.getResource("/sherlock-and-anagrams_input2.txt").toURI());
         final List<String> allLines = Files.readAllLines(path);
