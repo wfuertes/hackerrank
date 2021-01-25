@@ -6,6 +6,7 @@ orbs:
 parameters:
   tag:
     default: '11.0'
+    type: 'string'
 
 workflows:
   maven_test:
