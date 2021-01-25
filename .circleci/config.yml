@@ -3,10 +3,19 @@ version: 2.1
 orbs:
   maven: circleci/maven@1.1.0
 
-parameters:
-  tag:
-    default: '11.0'
-    type: 'string'
+executors:
+  default:
+    description: |
+      The latest minor and patch update of the version 13 JDK image provided by CircleCI.
+    docker:
+      - image: cimg/openjdk:<<parameters.tag>>
+    parameters:
+      tag:
+        default: '11.0'
+        description: |
+          Can be changed to any of the available tags listed on the DockerHub for this image.
+          https://hub.docker.com/r/cimg/openjdk/tags
+        type: 'string'
 
 workflows:
   maven_test:
