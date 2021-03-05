@@ -5,9 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
 
-/**
- * https://algo.monster/problems/throttling_gateway
- */
+
 public class ThrottlingGateway {
 
     public static int droppedRequests(List<Integer> requestTimes) {
