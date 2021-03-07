@@ -1,5 +1,6 @@
 package interview.preparation.kit.challenges;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -20,19 +21,13 @@ public class ThrottlingGateway {
         int last10Sec = 0;
         int last60Sec = 0;
 
-        for (int instant : requestNumbers.keySet()) {
-            int currentRequests = requestNumbers.get(instant);
+        final List<Integer> instants = new ArrayList<>(requestNumbers.keySet());
 
-            last10Sec += currentRequests;
-            last60Sec += currentRequests;
+        for (int i = instants.get(0); i <= instants.get(instants.size() - 1); i++) {
+            int currentRequests = requestNumbers.getOrDefault(i, 0);
 
-            if (requestNumbers.containsKey(instant - 10)) {
-                last10Sec -= requestNumbers.get(instant - 10);
-            }
-
-            if (requestNumbers.containsKey(instant - 60)) {
-                last60Sec -= requestNumbers.get(instant - 60);
-            }
+            last10Sec += currentRequests - requestNumbers.getOrDefault(i - 10, 0);
+            last60Sec += currentRequests - requestNumbers.getOrDefault(i - 60, 0);
 
             int drop3 = 0;
             int drop10 = 0;
@@ -43,11 +38,11 @@ public class ThrottlingGateway {
             }
 
             if (last10Sec > 20) {
-                drop10 = last10Sec - 20;
+                drop10 = Math.min(last10Sec - 20, currentRequests);
             }
 
             if (last60Sec > 60) {
-                drop60 = last60Sec - 60;
+                drop60 = Math.min(last60Sec - 60, currentRequests);
             }
 
             dropped += IntStream.of(drop3, drop10, drop60).max().getAsInt();
