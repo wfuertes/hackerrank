@@ -1,33 +1,30 @@
 package interview.preparation.kit.challenges;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.IntStream;
+
+import static java.util.Collections.emptyList;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
 
 public class ThrottlingGateway {
 
     public static int droppedRequests(List<Integer> requestTimes) {
-        final Map<Integer, Integer> requestNumbers = new TreeMap<>();
-
-        for (int request : requestTimes) {
-            requestNumbers.putIfAbsent(request, 0);
-            requestNumbers.put(request, requestNumbers.get(request) + 1);
-        }
+        final Map<Integer, List<Integer>> numberOfRequests = requestTimes.stream()
+                                                                         .collect(groupingBy(identity(), mapping(identity(), toList())));
 
         int dropped = 0;
         int last10Sec = 0;
         int last60Sec = 0;
 
-        final List<Integer> instants = new ArrayList<>(requestNumbers.keySet());
+        for (int time = requestTimes.get(0); time <= requestTimes.get(requestTimes.size() - 1); time++) {
+            int currentRequests = numberOfRequests.getOrDefault(time, emptyList()).size();
 
-        for (int i = instants.get(0); i <= instants.get(instants.size() - 1); i++) {
-            int currentRequests = requestNumbers.getOrDefault(i, 0);
-
-            last10Sec += currentRequests - requestNumbers.getOrDefault(i - 10, 0);
-            last60Sec += currentRequests - requestNumbers.getOrDefault(i - 60, 0);
+            last10Sec += currentRequests - numberOfRequests.getOrDefault(time - 10, emptyList()).size();
+            last60Sec += currentRequests - numberOfRequests.getOrDefault(time - 60, emptyList()).size();
 
             int drop3 = 0;
             int drop10 = 0;
@@ -45,7 +42,7 @@ public class ThrottlingGateway {
                 drop60 = Math.min(last60Sec - 60, currentRequests);
             }
 
-            dropped += IntStream.of(drop3, drop10, drop60).max().getAsInt();
+            dropped += Math.max(drop3, Math.max(drop10, drop60));
         }
 
         return dropped;
