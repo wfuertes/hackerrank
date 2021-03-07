@@ -3,28 +3,24 @@ package interview.preparation.kit.challenges;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 
 public class ThrottlingGateway {
 
     public static int droppedRequests(List<Integer> requestTimes) {
-        final Map<Integer, List<Integer>> numberOfRequests = requestTimes.stream()
-                                                                         .collect(groupingBy(identity(), mapping(identity(), toList())));
+        final Map<Integer, Integer> numberOfRequests = requestTimes.stream().collect(toMap(identity(), value -> 1, Math::addExact));
 
         int dropped = 0;
         int last10Sec = 0;
         int last60Sec = 0;
 
         for (int time = requestTimes.get(0); time <= requestTimes.get(requestTimes.size() - 1); time++) {
-            int currentRequests = numberOfRequests.getOrDefault(time, emptyList()).size();
+            int currentRequests = numberOfRequests.getOrDefault(time, 0);
 
-            last10Sec += currentRequests - numberOfRequests.getOrDefault(time - 10, emptyList()).size();
-            last60Sec += currentRequests - numberOfRequests.getOrDefault(time - 60, emptyList()).size();
+            last10Sec += currentRequests - numberOfRequests.getOrDefault(time - 10, 0);
+            last60Sec += currentRequests - numberOfRequests.getOrDefault(time - 60, 0);
 
             int drop3 = 0;
             int drop10 = 0;
